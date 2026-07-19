@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+pydantic
+# Optional for your embedding model integration:
+# torch
+# transformers
+# numpy
+# faiss-cpu

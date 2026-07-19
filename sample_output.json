@@ -1,0 +1,53 @@
+{
+  "case_type": "damaged_delivery",
+  "recommended_resolution": "replacement_or_refund",
+  "confidence": 91,
+  "human_review_required": false,
+  "verification": {
+    "risk_score": 5,
+    "risk_label": "low",
+    "requires_human_review": false,
+    "reasons": [
+      "Order/customer reference is available.",
+      "Multiple evidence signals are available.",
+      "Complaint is inside the matched policy window."
+    ]
+  },
+  "matched_policy": {
+    "policy_id": "POL-RET-7",
+    "title": "7 day damaged delivery replacement policy",
+    "score": 0.63,
+    "resolution": "replacement_or_refund",
+    "window_days": 7,
+    "requires_evidence": true
+  },
+  "parsed_complaint": {
+    "issue_type": "damaged_delivery",
+    "emotion": "neutral",
+    "urgency": "medium",
+    "requested_action": "fair_resolution",
+    "extracted_order_id": "ORD-99421",
+    "evidence_signals": [
+      "photo",
+      "invoice"
+    ],
+    "pressure_signals": [],
+    "key_facts": [
+      "Order reference found: ORD-99421",
+      "Customer mentions evidence: photo, invoice",
+      "Customer indicates repeated contact"
+    ]
+  },
+  "reasons": [
+    "Matched policy: 7 day damaged delivery replacement policy.",
+    "Similar case OLD-101 was resolved as: replacement_or_refund.",
+    "Order/customer reference is available.",
+    "Multiple evidence signals are available.",
+    "Complaint is inside the matched policy window."
+  ],
+  "next_actions": [
+    "Approve replacement if stock is available",
+    "Offer refund if replacement is unavailable"
+  ],
+  "customer_reply": "Hi Riya Sharma, based on the available details, your case is eligible for the recommended resolution: replacement or refund."
+}

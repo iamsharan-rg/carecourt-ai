@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CareCourt AI</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand-block"><div class="brand-mark">CC</div><div><strong>CareCourt AI</strong><span>Resolution Engine</span></div></div>
+      <nav>
+        <button id="nav-complaints" class="active" onclick="switchTab('complaints')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>Complaints</button>
+        <button id="nav-workspace" onclick="switchTab('workspace')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>Company Workspace</button>
+        <button id="nav-customer" onclick="switchTab('customer')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>Customer Portal</button>
+        <button id="nav-policies" onclick="switchTab('policies')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>Policies</button>
+        <button id="nav-verification" onclick="switchTab('verification')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>Verification</button>
+        <button id="nav-analytics" onclick="switchTab('analytics')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path></svg>Analytics</button>
+      </nav>
+      <div class="stack-card"><span>Runtime</span><strong id="runtimeMode">Browser AI ready</strong><small>Backend uses your MiniLM + FAISS adapter when packages are installed.</small></div>
+    </aside>
+    <main>
+
+      <!-- COMPLAINTS TAB — lean, company-wide queue only -->
+      <div id="tab-complaints" class="tab-content">
+        <header class="topbar">
+          <div>
+            <h1>Complaints Queue</h1>
+            <p>Every complaint filed, company-wide. Click one to open it in the Company Workspace.</p>
+          </div>
+          <div style="display:flex;gap:12px;align-items:center;">
+            <div class="status-pill" id="apiStatus">Checking API</div>
+          </div>
+        </header>
+
+        <section class="metrics" style="grid-template-columns: repeat(2, 1fr);">
+          <div style="position:relative;overflow:hidden;">
+            <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#c6a34d,#8b5cf6);"></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <div>
+                <strong id="caseCount" style="font-size:48px;font-weight:900;background:linear-gradient(135deg,#d4b876,#7d7096);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">4</strong>
+                <span style="display:block;color:var(--muted);font-size:14px;font-weight:600;margin-top:4px;">Active Cases</span>
+              </div>
+              <div style="width:48px;height:48px;border-radius:12px;background:rgba(198,163,77,0.1);border:1px solid rgba(198,163,77,0.2);display:grid;place-items:center;">
+                <svg fill="none" stroke="#c6a34d" viewBox="0 0 24 24" style="width:22px;height:22px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+              </div>
+            </div>
+          </div>
+          <div style="position:relative;overflow:hidden;">
+            <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#a1503f,#b8863f);"></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <div>
+                <strong id="riskMetric" style="font-size:48px;font-weight:900;background:linear-gradient(135deg,#f87171,#fbbf24);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">1</strong>
+                <span style="display:block;color:var(--muted);font-size:14px;font-weight:600;margin-top:4px;">Needs Human Review</span>
+              </div>
+              <div style="width:48px;height:48px;border-radius:12px;background:rgba(161,80,63,0.1);border:1px solid rgba(161,80,63,0.2);display:grid;place-items:center;">
+                <svg fill="none" stroke="#a1503f" viewBox="0 0 24 24" style="width:22px;height:22px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div class="panel queue-panel" style="position:relative;overflow:hidden;">
+          <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#c6a34d,#7d7096);"></div>
+          <div class="panel-head">
+            <h2>
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:18px;height:18px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+              All Complaints
+            </h2>
+            <button id="seedBtn" style="display:flex;align-items:center;gap:6px;">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:14px;height:14px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+              Load Demo
+            </button>
+          </div>
+          <div class="queue-filters" id="queueFilters">
+            <button class="queue-filter active" data-filter="all" onclick="setQueueFilter('all')">All</button>
+            <button class="queue-filter" data-filter="needs_review" onclick="setQueueFilter('needs_review')">Needs Review</button>
+            <button class="queue-filter" data-filter="approved" onclick="setQueueFilter('approved')">Approved</button>
+            <button class="queue-filter" data-filter="escalated" onclick="setQueueFilter('escalated')">Escalated</button>
+            <button class="queue-filter" data-filter="edited" onclick="setQueueFilter('edited')">Edited</button>
+            <button class="queue-filter" data-filter="possible_fraud" onclick="setQueueFilter('possible_fraud')" style="color:#d1998c;">🚩 Possible Fraud</button>
+          </div>
+          <div id="caseQueue" class="case-list"></div>
+        </div>
+      </div>
+
+      <!-- COMPANY WORKSPACE TAB — full decision detail for the selected case -->
+      <div id="tab-workspace" class="tab-content hidden">
+        <header class="topbar">
+          <div>
+            <h1>Company Decision Workspace</h1>
+            <p>AI reasoning, risk verification, and human approval for the selected case.</p>
+          </div>
+          <span id="decisionBadge" class="tag low">Ready</span>
+          <span id="confidenceMetric" style="font-size:13px;font-weight:700;color:var(--green);margin-left:10px;">--</span>
+        </header>
+        <div class="panel detail-panel" style="position:relative;overflow:hidden;">
+          <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#6f9074,#c6a34d,#7d7096);"></div>
+          <div id="caseIdLabel" style="font-size:12px;color:var(--muted);margin-bottom:12px;font-family:monospace;"></div>
+          <div id="decisionView">
+            <!-- Empty state -->
+            <div style="text-align:center;padding:60px 24px;color:var(--muted);">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:48px;height:48px;margin:0 auto 16px;opacity:0.3;display:block;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
+              <p style="font-size:16px;font-weight:600;margin:0 0 8px;">No case selected</p>
+              <p style="font-size:14px;margin:0;">Open a complaint from the Complaints tab to see the AI decision here.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CUSTOMER PORTAL TAB — what a customer actually sees, no internal risk data -->
+      <div id="tab-customer" class="tab-content hidden">
+        <header class="topbar">
+          <div>
+            <h1>File a Complaint</h1>
+            <p>The customer-facing experience — no risk scores, staff notes, or internal reasoning are shown here.</p>
+          </div>
+        </header>
+        <section class="workspace" style="grid-template-columns: 1fr 1fr;">
+          <div class="panel intake-panel" style="position:relative;overflow:hidden;">
+            <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#7d7096,#8a5568);"></div>
+            <div class="panel-head">
+              <h2>
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:18px;height:18px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                Submit Your Complaint
+              </h2>
+              <span style="font-size:12px;padding:5px 12px;background:rgba(125,112,150,0.1);color:var(--violet);border:1px solid rgba(125,112,150,0.3);border-radius:6px;font-weight:700;">⚡ Reviewed instantly</span>
+            </div>
+            <form id="complaintForm">
+              <label>Customer Name<input id="customerName" placeholder="e.g. Riya Sharma" value="Riya Sharma"></label>
+              <label>Issue Type
+                <select id="issueType">
+                  <option value="">🔍 Auto detect</option>
+                  <option value="damaged_delivery">📦 Damaged Delivery</option>
+                  <option value="refund_dispute">💳 Refund Dispute</option>
+                  <option value="warranty_claim">🔧 Warranty Claim</option>
+                  <option value="delivery_delay">🚚 Delivery Delay</option>
+                  <option value="missed_promise">📞 Missed Promise</option>
+                  <option value="cancellation">🚫 Cancellation</option>
+                </select>
+              </label>
+              <label>Complaint Description
+                <textarea id="complaintText" placeholder="Describe the issue in detail...">My order ORD-99421 arrived broken yesterday. I contacted support twice and nobody helped me. I have the invoice and photo proof.</textarea>
+              </label>
+              <div class="two-col">
+                <label>Days since delivery<input id="days" type="number" value="1" placeholder="0"></label>
+                <label>Evidence files<input id="evidence" type="number" value="2" placeholder="0"></label>
+              </div>
+              <label>Upload proof
+                <input id="proofUpload" type="file" multiple accept="image/*,.pdf,.doc,.docx">
+                <div id="proofPreview" class="file-hint">No files selected yet</div>
+              </label>
+              <div class="two-col">
+                <label>Order verified
+                  <select id="orderExists">
+                    <option value="true">✅ Yes</option>
+                    <option value="false">❌ No</option>
+                    <option value="unknown">❓ Unknown</option>
+                  </select>
+                </label>
+                <label>Claims in 30 days<input id="claims" type="number" value="0" placeholder="0"></label>
+              </div>
+              <button class="primary" type="submit" style="display:flex;align-items:center;justify-content:center;gap:8px;">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:16px;height:16px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                Submit Complaint
+              </button>
+            </form>
+          </div>
+
+          <div class="panel" id="customerStatusPanel" style="position:relative;overflow:hidden;">
+            <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#6f9074,#c6a34d,#7d7096);"></div>
+            <div class="panel-head"><h2>Your Complaint Status</h2></div>
+            <div style="text-align:center;padding:50px 24px;color:var(--muted);">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:44px;height:44px;margin:0 auto 16px;opacity:0.3;display:block;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              <p style="font-size:15px;font-weight:600;margin:0 0 6px;">No complaint submitted yet</p>
+              <p style="font-size:13px;margin:0;">Submit the form to see your status and reference number here.</p>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- POLICIES TAB -->
+      <div id="tab-policies" class="tab-content hidden">
+        <header class="topbar"><div><h1>Company Policies</h1><p>Active rules and resolution parameters loaded into the AI Engine.</p></div></header>
+        <section class="workspace" style="grid-template-columns: repeat(3, 1fr);">
+          <div class="panel"><div class="panel-head"><h2>7 Day Replacement</h2><span class="tag low">Active</span></div><p class="muted">Damaged products with photo proof inside 7 days qualify for replacement or refund.</p></div>
+          <div class="panel"><div class="panel-head"><h2>Refund Dispute</h2><span class="tag low">Active</span></div><p class="muted">Refund disputes require order verification and payment ledger review.</p></div>
+          <div class="panel"><div class="panel-head"><h2>Warranty Claim</h2><span class="tag low">Active</span></div><p class="muted">Warranty claims require invoice and serial number during 365 day warranty period.</p></div>
+          <div class="panel"><div class="panel-head"><h2>Delivery Delay SLA</h2><span class="tag low">Active</span></div><p class="muted">Delayed deliveries require courier check and compensation review if the SLA was missed.</p></div>
+          <div class="panel"><div class="panel-head"><h2>Cancellation</h2><span class="tag low">Active</span></div><p class="muted">Cancellation requests must be confirmed within 14 days; retention review applies to active plans.</p></div>
+          <div class="panel"><div class="panel-head"><h2>Verification Policy</h2><span class="tag review">Global — applies to all cases</span></div><p class="muted">Every case is risk-scored regardless of matched policy: short/vague complaints, missing order references, low evidence, repeat claimants (3+ in 30 days), out-of-window complaints, and escalation language without proof all raise risk. Score 40+ requires human review. See the Risk Scoring Rule Engine on the Verification tab for the full rule table.</p></div>
+        </section>
+      </div>
+
+      <!-- VERIFICATION TAB -->
+      <div id="tab-verification" class="tab-content hidden">
+        <header class="topbar">
+          <div>
+            <h1>Verification &amp; Risk Model</h1>
+            <p>Real-time SHA-256 PII encryption, multi-dimensional fraud radar, and live scoring engine.</p>
+          </div>
+          <div style="display:flex;gap:12px;align-items:center;">
+            <div class="status-pill">🔒 AES-Grade Encryption</div>
+            <div class="status-pill" style="border-color:rgba(125,112,150,0.4);color:var(--violet);">⚡ Live Risk Engine</div>
+          </div>
+        </header>
+
+        <!-- Row 1: Risk Score Meter + Radar Chart + Security Status -->
+        <section class="workspace" style="grid-template-columns: 260px 1fr 1fr;">
+
+          <!-- Live Risk Score Meter -->
+          <div class="panel" style="position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px 24px;">
+            <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,var(--red),var(--amber),var(--green));"></div>
+            <div style="font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:20px;">Live Risk Score</div>
+            <!-- SVG Arc Meter -->
+            <svg width="160" height="100" viewBox="0 0 160 100">
+              <path d="M 20 90 A 60 60 0 0 1 140 90" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="14" stroke-linecap="round"/>
+              <path id="riskArcPath" d="M 20 90 A 60 60 0 0 1 140 90" fill="none" stroke="url(#riskGrad)" stroke-width="14" stroke-linecap="round" stroke-dasharray="188" stroke-dashoffset="188" style="transition:stroke-dashoffset 1s ease;"/>
+              <defs>
+                <linearGradient id="riskGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#6f9074"/>
+                  <stop offset="50%" stop-color="#b8863f"/>
+                  <stop offset="100%" stop-color="#a1503f"/>
+                </linearGradient>
+              </defs>
+              <text x="80" y="82" text-anchor="middle" font-size="28" font-weight="900" fill="white" id="riskScoreText">--</text>
+            </svg>
+            <div id="riskScoreLabel" style="margin-top:8px;font-size:13px;font-weight:700;color:var(--muted);">SELECT A CASE</div>
+            <div style="width:100%;margin-top:20px;display:grid;gap:8px;">
+              <div style="display:flex;justify-content:space-between;font-size:12px;"><span style="color:var(--green);">● Safe</span><span style="color:var(--muted);">0 – 39</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;"><span style="color:var(--amber);">● Review</span><span style="color:var(--muted);">40 – 69</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;"><span style="color:var(--red);">● High Risk</span><span style="color:var(--muted);">70 – 100</span></div>
+            </div>
+          </div>
+
+          <!-- Radar Risk Chart -->
+          <div class="panel">
+            <div class="panel-head">
+              <h2><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:18px;height:18px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>Fraud Risk Radar</h2>
+              <span class="tag medium" id="radarRiskBadge">No case selected</span>
+            </div>
+            <div style="height:260px;display:flex;justify-content:center;">
+              <canvas id="riskRadarChart"></canvas>
+            </div>
+          </div>
+
+          <!-- PII Encryption Engine -->
+          <div class="panel" style="position:relative;overflow:hidden;">
+            <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#6f9074,#6a8f8a,#c6a34d);"></div>
+            <div class="panel-head">
+              <h2><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:18px;height:18px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>PII Encryption Engine</h2>
+              <span class="tag low">SHA-256</span>
+            </div>
+            <p class="muted" style="margin-bottom:16px;font-size:13px;">Customer PII is one-way hashed before storage. The original plaintext is never retained.</p>
+            <!-- Hash terminal boxes -->
+            <div style="display:grid;gap:10px;">
+              <div style="background:rgba(0,0,0,0.4);border:1px solid rgba(111,144,116,0.2);border-left:3px solid var(--green);border-radius:8px;padding:14px;">
+                <div style="font-size:11px;color:var(--green);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">👤 Customer Name → SHA-256</div>
+                <div id="nameHashDisplay" style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#a8c9ab;word-break:break-all;line-height:1.7;opacity:0.8;">Awaiting submission...</div>
+              </div>
+              <div style="background:rgba(0,0,0,0.4);border:1px solid rgba(198,163,77,0.2);border-left:3px solid var(--blue);border-radius:8px;padding:14px;">
+                <div style="font-size:11px;color:var(--blue);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">📦 Order ID → SHA-256</div>
+                <div id="orderHashDisplay" style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#ecd9a8;word-break:break-all;line-height:1.7;opacity:0.8;">Awaiting submission...</div>
+              </div>
+            </div>
+            <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap;">
+              <span style="font-size:11px;padding:5px 10px;background:var(--green-bg);color:var(--green);border:1px solid rgba(111,144,116,0.3);border-radius:6px;font-weight:700;">✓ One-way</span>
+              <span style="font-size:11px;padding:5px 10px;background:var(--green-bg);color:var(--green);border:1px solid rgba(111,144,116,0.3);border-radius:6px;font-weight:700;">✓ Tamper-proof</span>
+              <span style="font-size:11px;padding:5px 10px;background:var(--green-bg);color:var(--green);border:1px solid rgba(111,144,116,0.3);border-radius:6px;font-weight:700;">✓ 256-bit</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Row 2: Full Risk Factor Table -->
+        <div class="panel" style="margin-top:0;">
+          <div class="panel-head">
+            <h2><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:18px;height:18px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>Risk Scoring Rule Engine</h2>
+            <span class="tag low">6 active rules</span>
+          </div>
+          <table style="width:100%;border-collapse:collapse;font-size:14px;">
+            <thead>
+              <tr style="border-bottom:1px solid rgba(255,255,255,0.08);">
+                <th style="text-align:left;padding:10px 16px;color:var(--muted);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;">Rule</th>
+                <th style="text-align:left;padding:10px 16px;color:var(--muted);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;">Trigger Condition</th>
+                <th style="text-align:center;padding:10px 16px;color:var(--muted);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;">Score Impact</th>
+                <th style="text-align:center;padding:10px 16px;color:var(--muted);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;">Severity</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom:1px solid rgba(255,255,255,0.04);transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.02)'" onmouseout="this.style.background=''">
+                <td style="padding:16px;font-weight:600;">Text Quality Check</td>
+                <td style="padding:16px;color:var(--muted);">Complaint text is under 45 characters — too short to be a legitimate claim</td>
+                <td style="padding:16px;text-align:center;"><strong style="color:var(--red);font-size:16px;">+20</strong></td>
+                <td style="padding:16px;text-align:center;"><span class="tag high">HIGH</span></td>
+              </tr>
+              <tr style="border-bottom:1px solid rgba(255,255,255,0.04);transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.02)'" onmouseout="this.style.background=''">
+                <td style="padding:16px;font-weight:600;">Order ID Verification</td>
+                <td style="padding:16px;color:var(--muted);">No valid order reference found in the complaint text or system records</td>
+                <td style="padding:16px;text-align:center;"><strong style="color:var(--red);font-size:16px;">+35</strong></td>
+                <td style="padding:16px;text-align:center;"><span class="tag high">CRITICAL</span></td>
+              </tr>
+              <tr style="border-bottom:1px solid rgba(255,255,255,0.04);transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.02)'" onmouseout="this.style.background=''">
+                <td style="padding:16px;font-weight:600;">Evidence Detection</td>
+                <td style="padding:16px;color:var(--muted);">No photo, invoice, or screenshot evidence found for a claim that requires it</td>
+                <td style="padding:16px;text-align:center;"><strong style="color:var(--red);font-size:16px;">+15</strong></td>
+                <td style="padding:16px;text-align:center;"><span class="tag high">HIGH</span></td>
+              </tr>
+              <tr style="border-bottom:1px solid rgba(255,255,255,0.04);transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.02)'" onmouseout="this.style.background=''">
+                <td style="padding:16px;font-weight:600;">Policy Window Check</td>
+                <td style="padding:16px;color:var(--muted);">Claim filed outside the matched policy window (e.g., after 7-day return cutoff)</td>
+                <td style="padding:16px;text-align:center;"><strong style="color:var(--amber);font-size:16px;">+18</strong></td>
+                <td style="padding:16px;text-align:center;"><span class="tag medium">MEDIUM</span></td>
+              </tr>
+              <tr style="border-bottom:1px solid rgba(255,255,255,0.04);transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.02)'" onmouseout="this.style.background=''">
+                <td style="padding:16px;font-weight:600;">Repeat Claim History</td>
+                <td style="padding:16px;color:var(--muted);">Customer has submitted 3 or more claims within the past 30 days</td>
+                <td style="padding:16px;text-align:center;"><strong style="color:var(--amber);font-size:16px;">+20</strong></td>
+                <td style="padding:16px;text-align:center;"><span class="tag medium">MEDIUM</span></td>
+              </tr>
+              <tr style="transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.02)'" onmouseout="this.style.background=''">
+                <td style="padding:16px;font-weight:600;">Multi-Evidence Bonus</td>
+                <td style="padding:16px;color:var(--muted);">Two or more evidence files (photo + invoice) are provided — strong legitimacy signal</td>
+                <td style="padding:16px;text-align:center;"><strong style="color:var(--green);font-size:16px;">−10</strong></td>
+                <td style="padding:16px;text-align:center;"><span class="tag low">REDUCTION</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Row 3: Identity Verification Tool — the actual "how do I verify" workflow -->
+        <div class="panel" style="margin-top:0;">
+          <div class="panel-head">
+            <h2><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:18px;height:18px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>Identity Verification Tool</h2>
+            <span class="tag review">Manual staff action</span>
+          </div>
+          <p class="muted" style="margin-bottom:16px;font-size:13px;">Cross-check a customer's stated name against the Crypto ID stored on a case. This is also available directly inside each complaint's popup — use this version when you have a case ID on hand but haven't opened the complaint yet.</p>
+          <div class="two-col" style="margin-bottom:14px;">
+            <label>Case ID<input id="verifyCaseId" placeholder="e.g. CC-2001"></label>
+            <label>Customer name to check<input id="verifyCustomerName" placeholder="Name as given by the customer"></label>
+          </div>
+          <button class="secondary" id="runVerifyBtn" style="margin-bottom:16px;">Verify Match</button>
+          <div id="verifyResult"></div>
+        </div>
+      </div>
+
+      <!-- ANALYTICS TAB -->
+      <div id="tab-analytics" class="tab-content hidden">
+        <header class="topbar"><div><h1>Analytics Dashboard</h1><p>High-level system metrics across all parsed complaints.</p></div></header>
+        <section class="metrics">
+          <div><strong id="autoResolvedMetric" style="color:var(--green)">74%</strong><span>Auto-resolved cases</span></div>
+          <div><strong id="reviewMetric" style="color:var(--violet)">26%</strong><span>Sent to human review</span></div>
+          <div><strong id="riskMetricAnalytics" style="color:var(--amber)">Avg 18</strong><span>Risk score across all claims</span></div>
+        </section>
+        
+        <section class="workspace" style="grid-template-columns: 1fr 1fr; margin-top: 16px;">
+          <!-- Left Column -->
+          <div class="panel">
+            <div class="panel-head"><h2>Case Volume Trends (30 Days)</h2></div>
+            <div style="height: 250px; width: 100%;">
+              <canvas id="volumeChart"></canvas>
+            </div>
+          </div>
+          
+          <!-- Right Column -->
+          <div class="panel">
+            <div class="panel-head"><h2>Resolution Breakdown</h2></div>
+            <div style="height: 250px; width: 100%; display: flex; justify-content: center;">
+              <canvas id="resolutionChart"></canvas>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" style="margin-top: 16px;">
+          <div class="panel-head"><h2>Operations Report</h2></div>
+          <div id="reportSummary" class="report-grid"></div>
+        </section>
+      </div>
+
+    </main>
+
+    <!-- COMPLAINT DETAIL MODAL -->
+    <div id="caseModalBackdrop" class="modal-backdrop hidden" onclick="if(event.target===this) closeCaseModal()">
+      <div class="modal-shell">
+        <button class="modal-close" onclick="closeCaseModal()" aria-label="Close">✕</button>
+        <div class="modal-card">
+          <div id="caseModalBody"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
